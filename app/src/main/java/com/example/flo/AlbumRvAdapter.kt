@@ -10,12 +10,14 @@ class AlbumRvAdapter (private val albumList : ArrayList<Album>) : RecyclerView.A
     // 클릭 인터페이스 정의
     interface MyItemClickListener{
         fun onItemClick(album: Album)
-//        fun addItem(position: Int)
+        fun onRemoveAlbum(position: Int)
+
     }
 
-    // 외부의 리스너 객체를 저장할 변수
+    // 외부의 리스너 객체를 저장할 변수 (클릭 리스너 선언)
     private lateinit var mItemClickListener : MyItemClickListener
-    // 외부의 리스너 객체를 전달받는 함수
+
+    // 외부의 리스너 객체를 전달받는 함수 (클릭 리스너 등록 메소드 : 메인 액티비티에서 inner Class로 호출)
     fun setMyItemClickListener(itemClickListener : MyItemClickListener){
         mItemClickListener = itemClickListener
     }
@@ -27,23 +29,35 @@ class AlbumRvAdapter (private val albumList : ArrayList<Album>) : RecyclerView.A
         return ViewHolder(binding)
     }
 
-    // 보통 리사이클러뷰에 표시될 아이템을 추가, 삭제, 수정할 때는 Adapter에서 보통 관리를 한다.
-//    fun addItem(album: Album){
-//        albumList.add(album)
-//        notifyDataSetChanged()  // 아이템이 바뀌었다는것을 알려주어야 해
-//    }
-//    fun removeItem(position: Int){
-//        albumList.removeAt(position)
-//        notifyDataSetChanged()  // 아이템이 바뀌었다는것을 알려주어야 해
-//    }
 
-    // 뷰 홀더에 데이터를 바인딩해야 할 때마다 호출되는 함수 => 엄청 많이 호출될 것이다.
+    // 뷰홀더에 Data를 binding 위아래로 스크롤할 때 마다 엄청나게 호출
+    // 뷰홀더가 매개변수로 들어와서 자식 뷰에 접근 가능 -> 데이터 바인딩
     override fun onBindViewHolder(holder: AlbumRvAdapter.ViewHolder, position: Int) {
         holder.bind(albumList[position])
-        holder.itemView.setOnClickListener {
-            mItemClickListener.onItemClick(albumList[position])
+        holder.itemView.setOnClickListener { mItemClickListener.onItemClick(albumList[position])
         }
 //        holder.binding.itemAlbumCoverTitleTv.setOnClickListener{mItemClickListener.onRemoveAlbum(position)}
+    }
+
+    fun addItems(albums: ArrayList<Album>) {
+        albumList.clear()
+        albumList.addAll(albums)
+        notifyDataSetChanged()
+    }
+
+    fun addItem(album: Album) {
+        albumList.add(album)
+        notifyDataSetChanged()
+    }
+
+    fun removeItems() {
+        albumList.clear()
+        notifyDataSetChanged()
+    }
+
+    fun removeItem(position: Int) {
+        albumList.removeAt(position)
+        notifyDataSetChanged()
     }
     // 데이터 set 크기를 알려주는 함수 => 리사이클러뷰가 마지막이 언제인지를 알게 된다.
     override fun getItemCount(): Int {

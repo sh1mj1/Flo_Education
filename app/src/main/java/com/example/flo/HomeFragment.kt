@@ -13,83 +13,53 @@ import com.google.gson.Gson
 
 class HomeFragment : Fragment() {
     lateinit var binding: FragmentHomeBinding
-    private var albumDatas  = ArrayList<Album>()
+    private var albums = ArrayList<Album>()
+
+
+    private lateinit var songDB: SongDatabase
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         binding = FragmentHomeBinding.inflate(inflater, container, false)
-//        binding.homeAlbumNew1Ll.setOnClickListener {
-//            (context as MainActivity).supportFragmentManager.beginTransaction()
-//                .replace(R.id.main_frm, AlbumFragment())
-//                .commitAllowingStateLoss()
-//        }
 
-    // 데이터 리스트 만들기 더미데이터를 추가해 줬다.
+        //ROOM_DB
+        songDB = SongDatabase.getInstance(requireContext())!!
+        albums.addAll(songDB.albumDao().getAlbums()) // songDB에서 album list를 가져옵니다.
 
+        //레이아웃 매니저 설정
+        binding.homeTodayMusicRv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
-    albumDatas.apply {
-        add(Album("Butter", "방탄소년단(BTS)", R.drawable.img_album_exp))
-        add(Album("LILAC", "아이유(IU)", R.drawable.img_album_exp2))
-        add(Album("Next Level", "에스파", R.drawable.ic_my_like_off))
-        add(Album("Burn", "Tuesday Club", R.drawable.ic_my_like_on))
-        add(Album("원해", "Tuesday Club", R.drawable.main_btm_home_selector))
-        add(Album("망상", "Tuesday Club", R.drawable.btn_playlist_select_off))
-        }
+        //더미데이터와 Adapter 연결
+        val albumRecyclerViewAdapter = AlbumRvAdapter(albums)
 
-
-
-
-        // 어댑터 객체 설언
-        val albumRVAdapter = AlbumRvAdapter(albumDatas)
-        // 리사이클러뷰랑 어댑터 객체 연결
-        binding.homeTodayMusicRv.adapter = albumRVAdapter
-
-        albumRVAdapter.setMyItemClickListener(object : AlbumRvAdapter.MyItemClickListener{
+        //어댑터에서 만들었던 메소드를 여기서 리스너 객체 생성 및 전달
+        albumRecyclerViewAdapter.setMyItemClickListener(object : AlbumRvAdapter.MyItemClickListener{
             override fun onItemClick(album: Album) {
-                changeAlbumFragment(album)
-
-//                (context as AlbumFragment).childFragmentManager.beginTransaction()
-//                    .replace(R.id.album_info_tracks_rv, SongFragment().apply {
-//                        arguments = Bundle().apply {
-//                            val gson = Gson()
-//                            val trackJson = gson.toJson(album)
-//                            putString("album",trackJson)
-//                        }
-//                    }).commitAllowingStateLoss()
-
-
+                startAlbumFragment(album)
             }
-//            override fun onRemoveAlbum(position: Int) {
-//                albumRVAdapter.removeItem(position)
-//            }
-            // 등 등
 
-
+            override fun onRemoveAlbum(position: Int) {
+                albumRecyclerViewAdapter.removeItem(position)
+            }
         })
 
-
-        // 레이아웃 매니저 설정
-
-        binding.homeTodayMusicRv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,false)
+        binding.homeTodayMusicRv.adapter = albumRecyclerViewAdapter
 
         val bannerAdapter = BannerViewPagerAdapter(this)
-
         bannerAdapter.addFragment(BannerFragment(R.drawable.img_home_viewpager_exp))
         bannerAdapter.addFragment(BannerFragment(R.drawable.img_home_viewpager_exp2))
 
-        // ViewPager와 Fragment를 연결해주는 작업.
         binding.homeBannerVp.adapter = bannerAdapter
         binding.homeBannerVp.orientation = ViewPager2.ORIENTATION_HORIZONTAL
 
         return binding.root
     }
 
-    // 앨범 클릭 -> Home_frag 에서 Album_frag 로 이동할 때 Album_Frag 바꾸기
-    private fun changeAlbumFragment(album: Album) {
+    fun startAlbumFragment(album: Album) {
         (context as MainActivity).supportFragmentManager.beginTransaction()
             .replace(R.id.main_frm, AlbumFragment().apply {
                 arguments = Bundle().apply {
@@ -100,6 +70,4 @@ class HomeFragment : Fragment() {
             })
             .commitAllowingStateLoss()
     }
-
-
 }

@@ -28,16 +28,24 @@ class AlbumFragment : Fragment() {
         // HomeFragment 에서 넘어온 데이터 받아오기
         val albumData = arguments?.getString("album")
         val album = gson.fromJson(albumData, Album::class.java)
-        // Home 에서 넘어온 데이터를 반영
+
+        // HomeFrag에서 넘어온 데이터를 반영
         setInit(album)
 
+        //ROOM_DB
+        val songs = getSongs(album.id) //앨범안에 있는 수록곡들을 불러옵니다.
+        // 이 다음에 수록곡 프래그먼트에 songs을 전달해주는 식으로 사용하자
+
+        // 뒤로가기 버튼
         binding.albumBtnBackIb.setOnClickListener {
             (context as MainActivity).supportFragmentManager.beginTransaction()
                 .replace(R.id.main_frm, HomeFragment())
                 .commitAllowingStateLoss()
         }
 
+        // 뷰페이저 (수록곡, 상세정보, 영상)
         val albumAdapter = AlbumViewPagerAdapter(this)
+
         binding.albumAlbumInfoVp.adapter = albumAdapter
 
         //그리고 TalLayout을 ViewPager에 연결해주기, 탭에 텍스트 지정해주기
@@ -57,6 +65,15 @@ class AlbumFragment : Fragment() {
         binding.albumCoverIv.setImageResource(album.coverImg!!)
         binding.albumTitleTv.text = album.title.toString()
         binding.albumSingerTv.text = album.singer.toString()
+    }
+
+    //ROOM_DB
+    private fun getSongs(albumIdx: Int): ArrayList<Song>{
+        val songDB = SongDatabase.getInstance(requireContext())!!
+
+        val songs = songDB.songDao().getSongsInAlbum(albumIdx) as ArrayList
+
+        return songs
     }
 
 }

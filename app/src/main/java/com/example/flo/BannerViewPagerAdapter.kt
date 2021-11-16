@@ -20,8 +20,12 @@ class BannerViewPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment
         fragmentlist.add(fragment)
         notifyItemInserted(fragmentlist.size - 1)
 
-
         // Notify any registered observers that the item reflected at position has been newly inserted.
         // 이전 문장에서 fragment를 추가했으니 추가된 위치(position)은 fragmentlist.size-1
+
+        // 0 1 2 와 같이 3개의 프래그먼트가 list에 있는데 외부에서 0 1 2 3 포지션으로는 3 인덱스에 있음.
+        // 이걸 어댑터에게 새로 추가된 아이템이 있으니 다시 viewpager에게 알려주어라라는 것으로
+        // 추가된 곳의 인덱스를 인자로 넘겨 notifyItemInserted를 호출한다.
+
     }
 }
