@@ -39,7 +39,6 @@ class SongActivity : AppCompatActivity() {
 
         setRepeatBtn()
         setRandomBtn()
-
     }
 
     override fun onPause() {
@@ -113,7 +112,7 @@ class SongActivity : AppCompatActivity() {
         if (song.isLike) {
             binding.songLike.setImageResource(R.drawable.ic_my_like_on)
         } else {
-            binding.songUnlikeIv.setImageResource(R.drawable.ic_my_like_off)
+            binding.songLike.setImageResource(R.drawable.ic_my_like_off)
         }
 
         mediaPlayer = MediaPlayer.create(this, music)
@@ -192,9 +191,10 @@ class SongActivity : AppCompatActivity() {
     // songs의 현재 위치의 데이터의 Like를 반대로
     private fun setLike(isLike: Boolean) {
         songs[nowPos].isLike = !isLike                              // songs 리스트의 isLike 업데이트
-        songDB.songDao().updateIsLikeById(isLike, songs[nowPos].id) // Room_DB의 isLike 업데이트
+        songDB.songDao().updateIsLikeById(!isLike, songs[nowPos].id) // Room_DB의 isLike 업데이트
 
         if (isLike) {
+//            binding.songLike.setOnClickListener { CustomSnackBar.make(container,"좋아요한 곡에 담겼습니다.").show() }
             binding.songLike.setImageResource(R.drawable.ic_my_like_off)
         } else {
             binding.songLike.setImageResource(R.drawable.ic_my_like_on)

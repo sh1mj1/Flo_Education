@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.example.flo.SongActivity.Player
 import com.example.flo.databinding.ActivityMainBinding
 import com.google.gson.Gson
 
@@ -14,8 +15,9 @@ class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
     private lateinit var song: Song
 
-    // 미디어 플레이어 객체
+    // 미디어 플레이어
     private var mediaPlayer: MediaPlayer? = null
+    lateinit var player: Player
 
     // GSON 객체 선언
     private var gson: Gson = Gson()
@@ -63,11 +65,14 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        val spf = getSharedPreferences("song", MODE_PRIVATE)    // spf라는 SharedPreferences 객체 생성
-        val songId = spf.getInt("songId", 0)                // SharedPreferences 로 송id (Primary Key) 전달 받기
-                                                            // getInt의 0은 저장된 값이 없을 떄 기본값으로 가져온다는 뜻
+        val spf = getSharedPreferences("song", MODE_PRIVATE)              // spf라는 SharedPreferences 객체 생성
+        val songId = spf.getInt("songId", 0)                                    // SharedPreferences 로 송id (Primary Key) 전달 받기
+                                                                                // getInt의 0은 저장된 값이 없을 떄 기본값으로 가져온다는 뜻
+
+
+
         val songDB = SongDatabase.getInstance(this)!!
-        song = if (songId == 0){                // songId가 0이면(제일 처음 실행 시) id가 1인 song으로.
+        song = if (songId == 0){                                                // songId가 0이면(제일 처음 실행 시) id가 1인 song으로.
             songDB.songDao().getSong(1)
         }else{
             songDB.songDao().getSong(songId)
@@ -75,39 +80,12 @@ class MainActivity : AppCompatActivity() {
 
         Log.d("song ID", song.id.toString())
         setMiniPlayer(song)
+
+
+
+
+
     }
-
-
-//    override fun onStart() {
-//        super.onStart()
-//        val sharedPreferences = getSharedPreferences("song", MODE_PRIVATE)
-//        // MODE_PRIVATE 은 이 앱에서만 sharedPreference에 접근한다는 뜻
-//        val jsonSong = sharedPreferences.getString("song", null)
-//        song = if (jsonSong == null) {
-//            Song("가을 망상",  "Tuesday Club", 0, 218, false)
-//        } else {
-//            gson.fromJson(jsonSong, Song::class.java)
-//        }
-//        setMiniPlayer(song)
-//
-//    }
-
-//    override fun onStart() {
-//        super.onStart()
-//
-//        val spf = getSharedPreferences("song", MODE_PRIVATE)
-//        val songId = spf.getInt("songId", 0)
-//
-//        val songDB = SongDatabase.getInstance(this)!!
-//        song = if (songId == 0) {
-//            songDB.SongDao().getSong(1)
-//        } else {
-//            songDB.SongDao().getSong(songId)
-//        }
-//
-//        Log.d("song ID", song.id.toString())
-//        setMiniPlayer(song)
-//    }
 
 
     private fun initNavigation() {
@@ -160,9 +138,11 @@ class MainActivity : AppCompatActivity() {
         mediaPlayer = MediaPlayer.create(this, music)
 
         if (song.isPlaying) {    // 재생되고있으면 일시정지 버튼이 보임
+//            mediaPlayer?.start()
             binding.mainPauseBtn.visibility = View.VISIBLE
             binding.mainMiniplayerBtn.visibility = View.GONE
         } else {
+//            mediaPlayer?.pause()
             binding.mainPauseBtn.visibility = View.GONE
             binding.mainMiniplayerBtn.visibility = View.VISIBLE
         }

@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 
 // Room을 실질적으로 구현하는 부분
 
-@Database(entities =  [Song::class, Album::class], version = 3)       // version = 1 : 스키마를 추출하지 않음. 버전은 Song을 변경할 때 migration 할 수 있는 기준이 됨.
+@Database(entities =  [Song::class, Album::class], version = 1)      // version = 1 : 스키마를 추출하지 않음. 버전은 Song을 변경할 때 migration 할 수 있는 기준이 됨.
 abstract class SongDatabase : RoomDatabase() {
     abstract fun songDao(): SongDao                     // 미리 만들어놓은 SongDao에 접근할 수 있도록 abstract fun을 이용해서 contactsDao()를 만들어
     abstract fun albumDao() : AlbumDao
