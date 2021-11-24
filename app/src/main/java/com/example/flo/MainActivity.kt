@@ -27,12 +27,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        Log.d("MainActivity","onCreate()")
         initNavigation()
         inputDummyAlbums()
         inputDummySongs()
-
-
 
         binding.mainPlayerLayout.setOnClickListener {
             Log.d("nowSongId", song.id.toString())
@@ -66,11 +64,9 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
 
         val spf = getSharedPreferences("song", MODE_PRIVATE)              // spf라는 SharedPreferences 객체 생성
+        Log.d("MainActivity_onstart()", spf.toString())
         val songId = spf.getInt("songId", 0)                                    // SharedPreferences 로 송id (Primary Key) 전달 받기
                                                                                 // getInt의 0은 저장된 값이 없을 떄 기본값으로 가져온다는 뜻
-
-
-
         val songDB = SongDatabase.getInstance(this)!!
         song = if (songId == 0){                                                // songId가 0이면(제일 처음 실행 시) id가 1인 song으로.
             songDB.songDao().getSong(1)
@@ -78,7 +74,8 @@ class MainActivity : AppCompatActivity() {
             songDB.songDao().getSong(songId)
         }
 
-        Log.d("song ID", song.id.toString())
+        Log.d("MainActivity_song ID", song.id.toString())
+        Log.d("songData", song.toString())
         setMiniPlayer(song)
 
 
@@ -129,6 +126,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setMiniPlayer(song: Song) {
+
+//        Log.d("song이 연동됬는지 확인하기 songsecond "," (song.second*1000 / song.playTime).toString():)
+        Log.d("연동됬는지 확인song.second", (song.second*1000/ song.playTime).toString())
         binding.mainMiniPlayerTitleTv.text = song.title
         binding.mainMiniPlayerSingerTv.text = song.singer
         binding.mainPlayerSb.progress = (song.second * 1000 / song.playTime)

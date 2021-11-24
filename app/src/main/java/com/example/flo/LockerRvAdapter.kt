@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.flo.databinding.ItemSongsInLockerBinding
 
-class LockerRvAdapter() :
+class LockerRvAdapter () :
     RecyclerView.Adapter<LockerRvAdapter.ViewHolder>() {
 
     private val songs = ArrayList<Song>()

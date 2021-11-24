@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.flo.databinding.FragmentLockerSavedsongBinding
 
-class SavedSongFragment : Fragment(){
+class SavedSongFragment : Fragment() {
 
     lateinit var binding: FragmentLockerSavedsongBinding
     lateinit var songDB: SongDatabase
@@ -30,15 +30,16 @@ class SavedSongFragment : Fragment(){
         initRecyclerview()
     }
 
-    private fun initRecyclerview(){
-        binding.lockerSavedSongRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+    private fun initRecyclerview() {
+        binding.lockerSavedSongRecyclerView.layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
         val lockerRvAdapter = LockerRvAdapter()
         //리스너 객체 생성 및 전달
 
-        lockerRvAdapter.setMyItemClickListener(object : LockerRvAdapter.MyItemClickListener{
+        lockerRvAdapter.setMyItemClickListener(object : LockerRvAdapter.MyItemClickListener {
             override fun onRemoveSong(songId: Int) {
-                songDB.songDao().updateIsLikeById(false,songId)
+                songDB.songDao().updateIsLikeById(false, songId)
             }
         })
 

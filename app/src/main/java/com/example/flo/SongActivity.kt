@@ -43,6 +43,7 @@ class SongActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
+        Log.d("SongActivity","SongActivity onPause")
 
         songs[nowPos].second = (songs[nowPos].playTime * binding.songPlayerSb.progress) / 1000
         songs[nowPos].isPlaying = false
@@ -55,8 +56,19 @@ class SongActivity : AppCompatActivity() {
         editor.apply()
     }
 
+    override fun onStop(){
+        super.onStop()
+        Log.d("SongActivity","SongActivity onStop")
+
+
+
+    }
+
+
+
     override fun onDestroy() {
         super.onDestroy()
+        Log.d("SongActivity","SongActivity onDestroy")
         player.interrupt()          // 스레드 해제
         mediaPlayer?.release()      // 미디어 플레이어가 갖고 있던 리소스 해제
         mediaPlayer = null          // 미디어 플레이어 해제
